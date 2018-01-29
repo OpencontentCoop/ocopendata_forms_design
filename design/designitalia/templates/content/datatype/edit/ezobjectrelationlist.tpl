@@ -21,6 +21,8 @@
     'jquery.fileupload.js',
     'jquery.fileupload-process.js',
     'jquery.fileupload-ui.js',
+    'jquery.tag-editor.js',
+    'popper.min.js',
     'alpaca.js',
     'leaflet/leaflet.0.7.2.js',
     'leaflet/Control.Geocoder.js',
@@ -33,8 +35,11 @@
     'fields/OpenStreetMap.js',
     'fields/RelationBrowse.js',
     'fields/LocationBrowse.js',
+    'fields/Tags.js',
     'jquery.opendataform.js'
 ))}
+
+<script type="text/javascript" src={'javascript/summernote/summernote-bs4.js'|ezdesign()} charset="utf-8"></script>
 
 {ezcss_require(array(
     'ocbootstrap.css',
@@ -45,6 +50,8 @@
     'leaflet/MarkerCluster.Default.css',
     'bootstrap-datetimepicker.min.css',
     'jquery.fileupload.css',
+    'summernote/summernote-bs4.css',
+    'jquery.tag-editor.css',
     'alpaca-custom.css'
 ))}
 
