@@ -53,7 +53,7 @@ $(document).ready(function(){
     $('.ezobject-relation-browse').each(function(){
         var self = $(this);
         var subtree = $(this).data('subtree');
-        var classes = $(this).data('classes').split(',');
+        var classes = $(this).data('classes') ? $(this).data('classes').split(',') : false;
         var attributeBase = $(this).data('attribute_base');
         var attributeId = $(this).data('attribute');        
 

@@ -610,7 +610,7 @@
             return false;
         },
 
-        isSelectable: function (item){            
+        isSelectable: function (item){                        
             if ($.isArray(this.settings.classes) && this.settings.classes.length > 0){
                 return $.inArray( item.class_identifier, this.settings.classes ) > -1;
             }
