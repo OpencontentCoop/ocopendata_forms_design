@@ -1,61 +1,3 @@
-{set scope=global persistent_variable=hash('breadcrumb', false())}
-
-{ezscript_require( array(  'ezjsc::yui2', 'ezjsc::yui3', 'ezjsc::yui3io', 'ezajaxsearch.js' ) )}
-
-{ezscript_require(array(
-    'ezjsc::jquery',
-    'ezjsc::jqueryUI',
-    'bootstrap.min.js',
-    'bootstrap/tooltip.js',
-    'bootstrap/popover.js',
-    'plugins/chosen.jquery.js',
-    'moment.min.js',
-    'jquery.dataTables.js',
-    'dataTables.bootstrap.js',
-    'jquery.opendataDataTable.js',
-    'jquery.opendataTools.js',
-
-    'handlebars.min.js',
-    'moment-with-locales.min.js',
-    'bootstrap-datetimepicker.min.js',
-    'jquery.fileupload.js',
-    'jquery.fileupload-process.js',
-    'jquery.fileupload-ui.js',
-    'jquery.tag-editor.js',
-    'popper.min.js',
-    'alpaca.js',
-    'leaflet/leaflet.0.7.2.js',
-    'leaflet/Control.Geocoder.js',
-    'leaflet/Control.Loading.js',
-    'leaflet/Leaflet.MakiMarkers.js',
-    'leaflet/leaflet.activearea.js',
-    'leaflet/leaflet.markercluster.js',
-    'jquery.price_format.min.js',
-    'jquery.opendatabrowse.js',
-    'fields/OpenStreetMap.js',
-    'fields/RelationBrowse.js',
-    'fields/LocationBrowse.js',
-    'fields/Tags.js',
-    'jquery.opendataform.js'
-))}
-
-<script type="text/javascript" src={'javascript/summernote/summernote-bs4.js'|ezdesign()} charset="utf-8"></script>
-
-{ezcss_require(array(
-    'ocbootstrap.css',
-    'alpaca.min.css',
-    'leaflet/leaflet.0.7.2.css',
-    'leaflet/Control.Loading.css',
-    'leaflet/MarkerCluster.css',
-    'leaflet/MarkerCluster.Default.css',
-    'bootstrap-datetimepicker.min.css',
-    'jquery.fileupload.css',
-    'summernote/summernote-bs4.css',
-    'jquery.tag-editor.css',
-    'alpaca-custom.css'
-))}
-
-
 {let class_content=$attribute.class_content
      class_list=fetch( class, list, hash( class_filter, $class_content.class_constraint_list ) )
      can_create=true()
@@ -258,161 +200,86 @@
         {/default}
 {* Standard mode is browsing *}
 {else}
-    <div class="block relations-searchbox" id="ezobjectrelationlist_browse_{$attribute.id}">
+
+  <div class="ezobject-relation-container">
     {if is_set( $attribute.class_content.default_placement.node_id )}
-         {set browse_object_start_node = $attribute.class_content.default_placement.node_id}
+     {set browse_object_start_node = $attribute.class_content.default_placement.node_id}
     {/if}
 
-    {* Optional controls. *}
-    {include uri='design:content/datatype/edit/ezobjectrelationlist_controls.tpl'}
-        <div class="table-responsive">
-        <table class="table table-condensed{if $attribute.content.relation_list|not} hide{/if}" cellspacing="0">
-        <thead>
-        <tr>
-            <th class="tight"></th>
-            <th><small>{'Name'|i18n( 'design/standard/content/datatype' )}</small></th>
-            <th>{'Section'|i18n( 'design/standard/content/datatype' )}</th>
-            <th>{'Published'|i18n( 'design/standard/content/datatype' )}</th>
-            <th class="tight">{'Order'|i18n( 'design/standard/content/datatype' )}</th>
-        </tr>
-        </thead>
-        <tbody>
+    {if $browse_object_start_node}
+      <input type="hidden" name="{$attribute_base}_browse_for_object_start_node[{$attribute.id}]" value="{$browse_object_start_node|wash}" />
+    {/if}
+
+    {if is_set( $attribute.class_content.class_constraint_list[0] )}
+      <input type="hidden" name="{$attribute_base}_browse_for_object_class_constraint_list[{$attribute.id}]" value="{$attribute.class_content.class_constraint_list|implode(',')}" />
+    {/if}
+    
+    <div class="table-responsive">
+      <table class="table table-condensed" cellspacing="0">
+      <thead>
+      <tr class="{if $attribute.content.relation_list|not()}hide{/if}">
+          <th class="tight"></th>
+          <th><small>{'Name'|i18n( 'design/standard/content/datatype' )}</small></th>
+          <th><small>{'Section'|i18n( 'design/standard/content/datatype' )}</small></th>            
+          <th class="tight"><small>{'Order'|i18n( 'design/standard/content/datatype' )}</small></th>
+      </tr>
+      </thead>
+      <tbody>
         {if $attribute.content.relation_list}
-            {foreach $attribute.content.relation_list as $item sequence array( 'bglight', 'bgdark' ) as $style}
-			  {include name=relation_item uri='design:ezjsctemplate/relation_list_row.tpl' arguments=array( $item.contentobject_id, $attribute.id, $item.priority )}
-            {/foreach}
-        {/if}
-        <tr class="hide">
-          <td class="tight">
-              <input type="checkbox" name="{$attribute_base}_selection[{$attribute.id}][]" value="--id--" class="Form-input" />
-              <input type="hidden" name="{$attribute_base}_data_object_relation_list_{$attribute.id}[]" value="no_relation" />
-          </td>
-          <td><small></small></td>
-          <td><small></small></td>
-          <td><small></small></td>
-          <td><input size="2" type="text" name="{$attribute_base}_priority[{$attribute.id}][]" value="0" /></td>
-        </tr>
+          {foreach $attribute.content.relation_list as $item sequence array( 'bglight', 'bgdark' ) as $style}
+		       {def $related = fetch( content, object, hash( object_id, $item.contentobject_id ))}
+           <tr>
+              {* Remove. *}
+              <td class="related-id">
+                <input type="checkbox" name="{$attribute_base}_selection[{$attribute.id}][]" value="{$related.id|wash}" />
+                <input type="hidden" name="{$attribute_base}_data_object_relation_list_{$attribute.id}[]" value="{$related.id|wash}" />
+              </td>
+              
+              <td class="related-name">
+              {if $related|has_attribute( 'image' )}
+                {attribute_view_gui attribute=$related|attribute( 'image' ) image_class=tiny fluid=false()}
+              {/if}
+              {$related.name|wash()} <small>({$related.class_name|wash()})</small>
+              </td>
+
+              {* Section *}
+              <td class="related-section">
+                <small>{fetch( section, object, hash( section_id, $related.section_id ) ).name|wash()}</small>
+              </td>
+              
+              {* Order. *}
+              <td class="related-order">
+                <input size="2" type="text" name="{$attribute_base}_priority[{$attribute.id}][]" value="{$item.priority}" />
+              </td>
+          {undef $related}  
+          </tr>            
+          {/foreach}
+        {/if}        
         <tr class="buttons">
-          <td>
-            <button class="btn btn-sm ezobject-relation-remove-button {if $attribute.content.relation_list|not()}hide{/if}" type="submit" name="CustomActionButton[{$attribute.id}_remove_objects]">
+          <td colspan="4">
+            <button class="btn btn-sm btn-danger ezobject-relation-remove-button {if $attribute.content.relation_list|not()}hide{/if}" type="submit" name="CustomActionButton[{$attribute.id}_remove_objects]">
               <span class="fa fa-trash"></span>
             </button>
-          </td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
+            <button class="btn btn-sm btn-info ezobject-relation-add-button pull-right"                 
+                type="submit" 
+                name="CustomActionButton[{$attribute.id}_browse_objects]">
+              <span class="fa fa-plus"></span> {'Add existing objects'|i18n( 'design/standard/content/datatype' )}
+            </button>
+          </td>          
         </tr>
-        </tbody>
-        </table>
+      </tbody>
+      </table>
+      <div class="ezobject-relation-browse"           
+           data-attribute_base="{$attribute_base}" 
+           data-attribute="{$attribute.id}" 
+           data-classes="{if is_set( $attribute.class_content.class_constraint_list[0] )}{$attribute.class_content.class_constraint_list|implode(',')}{/if}"
+           data-subtree="{if $browse_object_start_node}{$browse_object_start_node|wash}{/if}"></div>
 
-        </div>
-
-
-        {if $browse_object_start_node}
-            <input type="hidden" name="{$attribute_base}_browse_for_object_start_node[{$attribute.id}]" value="{$browse_object_start_node|wash}" />
-        {/if}
-
-        {if is_set( $attribute.class_content.class_constraint_list[0] )}
-            <input type="hidden" name="{$attribute_base}_browse_for_object_class_constraint_list[{$attribute.id}]" value="{$attribute.class_content.class_constraint_list|implode(',')}" />
-        {/if}
-
-        <div class="Grid">
-            <div class="Grid-cell u-size12of12 u-sm-size12of12 u-md-size5of12 u-lg-size5of12">
-                <button class="btn" type="submit" name="CustomActionButton[{$attribute.id}_browse_objects]">
-                    {'Add existing objects'|i18n( 'design/standard/content/datatype' )}
-                </button>
-
-                <a class="btn opendataform-create-{$attribute.id}" data-class="{$attribute.contentclass_attribute.content.class_constraint_list[0]}" data-parent="{$attribute.contentclass_attribute.content.default_placement.node_id}" role="button">
-                    Crea nuovo oggetto
-                </a>
-            </div>
-            <div class="Grid-cell u-size12of12 u-sm-size12of12 u-md-size3of12 u-lg-size3of12">
-                {include uri='design:content/datatype/edit/ezobjectrelationlist_ajaxuploader.tpl'}
-            </div>
-            <div class="Grid-cell u-size12of12 u-sm-size12of12 u-md-size4of12 u-lg-size4of12">
-                <div class="Form-field Form-field--withPlaceholder Form--Grid-cell u-sizeFull u-sm-size6of12 u-md-size4of12 u-lg-size3of12">
-                    <input type="text" class="ezobject-relation-search-text" />
-                    <button type="submit"
-                            data-no_result="Nessun risultato per --search-string--"
-                            class="ezobject-relation-search-btn u-background-40 u-padding-all-s u-color-white"
-                            name="CustomActionButton[{$attribute.id}_browse_objects]">
-                        <span class="fa fa-search"></span>
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <ul class="u-border-top-m u-background-white inline-block ezobject-relation-search-browse hide"></ul>
-
-        {ezscript_require( array( 'ezjsc::jquery', 'ezjsc::jqueryio', 'plugins/edit.js' ) )}
-
-    </div><!-- /div class="block" id="ezobjectrelationlist_browse_{$attribute.id}" -->
+    </div>
+  </div>  
 {/if}
 
 </fieldset>
 
-
-<div id="details-modal" class="modal fade">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h2 class="modal-title" id="modal-title">Attendi fino a quando il file verrà caricato</h2>
-            </div>
-            <div class="modal-body" id="modal-body"></div>
-        </div>
-    </div>
-</div>
-
-<div id="modal" class="modal fade">
-    <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-            <div class="modal-body">
-                <div class="clearfix">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                </div>
-                <div id="modal_form"></div>
-            </div>
-        </div>
-    </div>
-</div>
-
 {/default}
 {/let}
-
-<script type="text/javascript" language="javascript" class="init">
-
-    {literal}
-    $(document).ready(function () {
-
-        var modal_form = $('#modal_form');
-
-        $('.opendataform-create-{/literal}{$attribute.id}{literal}').on('click', function(e){
-            var classIdentifier = $(this).data('class');
-            var parentNode = $(this).data('parent');
-
-            modal_form.opendataFormCreate({
-                "class": classIdentifier,
-                "parent": parentNode
-            },{
-                "onSuccess": function(data){
-                    modal_form.html(data.message);
-                    $('#modal').modal('hide');
-                    ezajaxrelationsSearchAddObject(this, $('#ezobjectrelationlist_browse_{/literal}{$attribute.id}{literal}').find('table'), data.content.metadata.id, data.content.metadata.name['ita-IT'], data.content.metadata.class, data.content.metadata.sectionIdentifier, data.content.metadata.published);
-                }
-            });
-            e.preventDefault();
-        });
-
-        // apre la finestra modale prima di caricare il form
-        $.opendataFormSetup({
-            onBeforeCreate: function(){
-                $('#modal').modal('show');
-            }
-        });
-
-    });
-    {/literal}
-
-</script>
