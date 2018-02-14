@@ -201,7 +201,7 @@
 {* Standard mode is browsing *}
 {else}
 
-  <div class="ezobject-relation-container">
+  <div class="ezobject-relationlist-container">
     {if is_set( $attribute.class_content.default_placement.node_id )}
      {set browse_object_start_node = $attribute.class_content.default_placement.node_id}
     {/if}
@@ -257,10 +257,10 @@
         {/if}        
         <tr class="buttons">
           <td colspan="4">
-            <button class="btn btn-sm btn-danger ezobject-relation-remove-button {if $attribute.content.relation_list|not()}hide{/if}" type="submit" name="CustomActionButton[{$attribute.id}_remove_objects]">
+            <button class="btn btn-sm btn-danger ezobject-relationlist-remove-button {if $attribute.content.relation_list|not()}hide{/if}" type="submit" name="CustomActionButton[{$attribute.id}_remove_objects]">
               <span class="fa fa-trash"></span>
             </button>
-            <button class="btn btn-sm btn-info ezobject-relation-add-button pull-right"                 
+            <button class="btn btn-sm btn-info ezobject-relationlist-add-button pull-right"                 
                 type="submit" 
                 name="CustomActionButton[{$attribute.id}_browse_objects]">
               <span class="fa fa-plus"></span> {'Add existing objects'|i18n( 'design/standard/content/datatype' )}
@@ -269,7 +269,7 @@
         </tr>
       </tbody>
       </table>
-      <div class="ezobject-relation-browse"           
+      <div class="ezobject-relationlist-browse"           
            data-attribute_base="{$attribute_base}" 
            data-attribute="{$attribute.id}" 
            data-classes="{if is_set( $attribute.class_content.class_constraint_list[0] )}{$attribute.class_content.class_constraint_list|implode(',')}{/if}"

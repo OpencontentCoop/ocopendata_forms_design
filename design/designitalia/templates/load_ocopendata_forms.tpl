@@ -50,9 +50,11 @@
 {literal}
 <script type="text/javascript">
 $(document).ready(function(){
-    $('.ezobject-relation-browse').each(function(){
+    var defaultSubtree = {/literal}{default_relations_parent_node_id()}{literal};
+    $('.ezobject-relationlist-browse').each(function(){
         var self = $(this);
         var subtree = $(this).data('subtree');
+        if (subtree == '') subtree = defaultSubtree;
         var classes = $(this).data('classes') ? $(this).data('classes').split(',') : false;
         var attributeBase = $(this).data('attribute_base');
         var attributeId = $(this).data('attribute');        
@@ -63,7 +65,7 @@ $(document).ready(function(){
             'addCreateButton': true,
             'classes': classes
         }).on('opendata.browse.select', function (event, opendataBrowse) {
-            var container = self.parents('.ezobject-relation-container').find('tbody');
+            var container = self.parents('.ezobject-relationlist-container').find('tbody');
             var priority = container.find('td.related-order').last().find('input').val() || -1;
             priority++;
             $.each(opendataBrowse.selection, function(){                
@@ -76,14 +78,14 @@ $(document).ready(function(){
             });
             opendataBrowse.reset();
             self.toggle();
-            self.parents('.ezobject-relation-container').find('.ezobject-relation-add-button').toggle();
+            self.parents('.ezobject-relationlist-container').find('.ezobject-relationlist-add-button').toggle();
         }).on('opendata.browse.close', function (event, opendataBrowse) {
             self.toggle();
-            self.parents('.ezobject-relation-container').find('.ezobject-relation-add-button').toggle();
+            self.parents('.ezobject-relationlist-container').find('.ezobject-relationlist-add-button').toggle();
         }).hide();
     });
-    $('.ezobject-relation-add-button').on('click', function(e){
-        $(this).parents('.ezobject-relation-container').find('.ezobject-relation-browse').toggle();
+    $('.ezobject-relationlist-add-button').on('click', function(e){
+        $(this).parents('.ezobject-relationlist-container').find('.ezobject-relationlist-browse').toggle();
         $(this).toggle();
         e.preventDefault();
     });
