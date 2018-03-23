@@ -49,12 +49,10 @@
 ))}
 {literal}
 <script type="text/javascript">
-$(document).ready(function(){
-    var defaultSubtree = {/literal}{default_relations_parent_node_id()}{literal};
+$(document).ready(function(){    
     $('.ezobject-relationlist-browse').each(function(){
         var self = $(this);
-        var subtree = $(this).data('subtree');
-        if (subtree == '') subtree = defaultSubtree;
+        var subtree = $(this).data('subtree');        
         var classes = $(this).data('classes') ? $(this).data('classes').split(',') : false;
         var attributeBase = $(this).data('attribute_base');
         var attributeId = $(this).data('attribute');        
@@ -75,6 +73,11 @@ $(document).ready(function(){
                 $('<td class="related-section"><small></small></td>').appendTo(row);
                 $('<td><input size="2" type="text" name="'+attributeBase+'_priority['+attributeId+'][]" value="'+priority+'" /></td>').appendTo(row);                
                 container.find('tr.buttons').before(row);
+                if(container.find('.related-id').length > 0){
+                    container.find('.ezobject-relationlist-remove-button').show();
+                }else{
+                    container.find('.ezobject-relationlist-remove-button').hide();
+                }
             });
             opendataBrowse.reset();
             self.toggle();

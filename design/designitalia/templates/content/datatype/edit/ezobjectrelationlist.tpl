@@ -257,7 +257,7 @@
         {/if}        
         <tr class="buttons">
           <td colspan="4">
-            <button class="btn btn-sm btn-danger ezobject-relationlist-remove-button {if $attribute.content.relation_list|not()}hide{/if}" type="submit" name="CustomActionButton[{$attribute.id}_remove_objects]">
+            <button class="btn btn-sm btn-danger ezobject-relationlist-remove-button" type="submit" name="CustomActionButton[{$attribute.id}_remove_objects]" {if count($attribute.content.relation_list)|eq(0)}style="display:none"{/if}>
               <span class="fa fa-trash"></span>
             </button>
             <button class="btn btn-sm btn-info ezobject-relationlist-add-button pull-right"                 
@@ -273,7 +273,7 @@
            data-attribute_base="{$attribute_base}" 
            data-attribute="{$attribute.id}" 
            data-classes="{if is_set( $attribute.class_content.class_constraint_list[0] )}{$attribute.class_content.class_constraint_list|implode(',')}{/if}"
-           data-subtree="{if $browse_object_start_node}{$browse_object_start_node|wash}{/if}"></div>
+           data-subtree="{if $browse_object_start_node}{$browse_object_start_node|wash}{else}{default_relations_parent_node_id($attribute.class_content.class_constraint_list)}{/if}"></div>
 
     </div>
   </div>  
