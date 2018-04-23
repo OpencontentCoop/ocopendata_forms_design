@@ -37,68 +37,7 @@
             || typeof $.fn.alpaca == 'undefined'
         ){
             this.settings.addCreateButton = false;
-            var OpenContentOcopendataInBrowseConnector = Alpaca.Connector.extend({
-                loadAll: function (resources, onSuccess, onError){
-                    var self = this;   
-                    
-                    var resourceUri = self._buildResourceUri();
-                    
-                    var onConnectSuccess = function() {
-                        
-                        var loaded = {};
-
-                        var doMerge = function(p, v1, v2){
-                            loaded[p] = v1;
-
-                            if (v2){
-                                if ((typeof(loaded[p]) === "object") && (typeof(v2) === "object")){
-                                    Alpaca.mergeObject(loaded[p], v2);
-                                }else{
-                                    loaded[p] = v2;
-                                }
-                            }
-                        };
-
-                        self._handleLoadJsonResource(
-                            resourceUri, 
-                            function(response){
-                                doMerge("data", resources.data, response.data);
-                                doMerge("options", resources.options, response.options);
-                                doMerge("schema", resources.schema, response.schema);
-                                doMerge("view", resources.view, response.view);                    
-                                onSuccess(loaded.data, loaded.options, loaded.schema, loaded.view);
-                            }, 
-                            function (loadError){
-                                if (onError && Alpaca.isFunction(onError)){
-                                    onError(loadError);
-                                }
-                            }
-                        );
-                    };        
-
-                    var onConnectError  = function(err) {
-                        if (onError && Alpaca.isFunction(onError)) {
-                            onError(err);
-                        }
-                    };
-
-                    self.connect(onConnectSuccess, onConnectError); 
-                },    
-                _buildResourceUri: function(){
-                    var self = this; 
-
-                    var prefix = '/';
-                    if ($.isFunction($.ez)){
-                        prefix = $.ez.root_url;
-                    }else if(self.config.prefix){
-                        prefix = self.config.prefix;
-                    }
-
-                    return prefix+"forms/connector/" + self.config.connector + "/?" + $.param(self.config.params);
-                }
-            });
-            Alpaca.registerConnectorClass("opendataforminbrowse", OpenContentOcopendataInBrowseConnector);        
-        }
+        }            
 
         this.resetBrowseParameters();
 
@@ -389,6 +328,69 @@
             var panel = $('<div class="panel panel-default"></div>').appendTo($(this.browserContainer));
             var panelHeading = self.buildPanelHeader(panel, false, false, true);
             panelHeading.append('<h3 class="panel-title" style="line-height: 2.5em;">Crea nuovo</h3>');
+
+            var OpenContentOcopendataInBrowseConnector = Alpaca.Connector.extend({
+                loadAll: function (resources, onSuccess, onError){
+                    var self = this;   
+                    
+                    var resourceUri = self._buildResourceUri();
+                    
+                    var onConnectSuccess = function() {
+                        
+                        var loaded = {};
+
+                        var doMerge = function(p, v1, v2){
+                            loaded[p] = v1;
+
+                            if (v2){
+                                if ((typeof(loaded[p]) === "object") && (typeof(v2) === "object")){
+                                    Alpaca.mergeObject(loaded[p], v2);
+                                }else{
+                                    loaded[p] = v2;
+                                }
+                            }
+                        };
+
+                        self._handleLoadJsonResource(
+                            resourceUri, 
+                            function(response){
+                                doMerge("data", resources.data, response.data);
+                                doMerge("options", resources.options, response.options);
+                                doMerge("schema", resources.schema, response.schema);
+                                doMerge("view", resources.view, response.view);                    
+                                onSuccess(loaded.data, loaded.options, loaded.schema, loaded.view);
+                            }, 
+                            function (loadError){
+                                if (onError && Alpaca.isFunction(onError)){
+                                    onError(loadError);
+                                }
+                            }
+                        );
+                    };        
+
+                    var onConnectError  = function(err) {
+                        if (onError && Alpaca.isFunction(onError)) {
+                            onError(err);
+                        }
+                    };
+
+                    self.connect(onConnectSuccess, onConnectError); 
+                },    
+                _buildResourceUri: function(){
+                    var self = this; 
+
+                    var prefix = '/';
+                    if ($.isFunction($.ez)){
+                        prefix = $.ez.root_url;
+                    }else if(self.config.prefix){
+                        prefix = self.config.prefix;
+                    }
+
+                    return prefix+"forms/connector/" + self.config.connector + "/?" + $.param(self.config.params);
+                }
+            });
+            Alpaca.registerConnectorClass("opendataforminbrowse", OpenContentOcopendataInBrowseConnector);        
+
 
             var params = {
                 class: classIdentifier
