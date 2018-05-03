@@ -12,6 +12,7 @@
             browseSort: 'published',
             browseOrder: '0',
             allowAllBrowse: true,
+            showThumbnail: false,
             openInSearchMode: false,
             addCloseButton: false,
             addCreateButton: false,
@@ -246,7 +247,8 @@
                                 node_id: this.node_id,
                                 name: this.name,
                                 class_name: this.class_name,
-                                class_identifier: this.class_identifier
+                                class_identifier: this.class_identifier,
+                                thumbnail_url: this.thumbnail_url
                             };
 
                             var listItem = self.makeListItem(item);
@@ -429,12 +431,19 @@
                                                     response.content.metadata.name[self.settings.language] :
                                                     response.content.metadata.name[Object.keys(response.content.metadata.name)[0]];
 
+                                                try {
+				                                	var imageUrl = response.conten.data[self.settings.language].image.url;
+				                                } catch( err ) { 
+				                                	var imageUrl = '';
+				                                }
+
                                                 var item = {
                                                     contentobject_id: response.content.metadata.id,
                                                     node_id: response.content.metadata.mainNodeId,
                                                     name: name,
                                                     class_name: response.content.metadata.classIdentifier, //@todo
-                                                    class_identifier: response.content.metadata.classIdentifier
+                                                    class_identifier: response.content.metadata.classIdentifier,
+                                                    thumbnail_url: imageUrl
                                                 };
                                                 self.appendToSelection(item);
 
@@ -525,13 +534,20 @@
                                 var name = typeof this.metadata.name[self.settings.language] != 'undefined' ? 
                                     this.metadata.name[self.settings.language] : 
                                     this.metadata.name[Object.keys(this.metadata.name)[0]];
-                                
+                                                                 
+                                try {
+                                	var imageUrl = this.data[self.settings.language].image.url;
+                                } catch( err ) { 
+                                	var imageUrl = '';
+                                }
+
                                 var item = {
                                     contentobject_id: this.metadata.id,
                                     node_id: this.metadata.mainNodeId,
                                     name: name,
                                     class_name: this.metadata.classIdentifier, //@todo
-                                    class_identifier: this.metadata.classIdentifier
+                                    class_identifier: this.metadata.classIdentifier,
+                                    thumbnail_url: imageUrl
                                 };
 
                                 var listItem = self.makeListItem(item);
@@ -593,15 +609,18 @@
                 detail.bind('click', function (e) {
                     var objectId = $(this).data('object_id');
                     var panelContent = $(this).closest('.panel-content');
-                    var previewContainer = $('<div class="panel-content" style="margin: 5px"></div>');
+                    var panelFooter = panelContent.next();
+                    var previewContainer = $('<div class="panel-content preview-container" style="margin: 5px"></div>');
 
                     var closePreviewButton = $('<a class="btn btn-xs btn-link pull-right" href="#">CHIUDI ANTEPRIMA</a>');
                     closePreviewButton.bind('click', function (e) {
                         panelContent.show();
+                        panelFooter.show();
                         previewContainer.remove();
                         e.preventDefault();
                     }).prependTo(previewContainer);
                     panelContent.hide();
+                    panelFooter.hide();
                     previewContainer.insertBefore(panelContent);
 
                     var d = new Date();
@@ -619,7 +638,7 @@
             var input = '';
             if (self.isSelectable(item)){
                 if (!self.isInSelection(item)){
-                    input = $('<span class="glyphicon glyphicon-unchecked pull-left" data-selection="'+item.contentobject_id+'" style="cursor:pointer;'+self.iconStyle+'"></span>');
+                    input = $('<span class="glyphicon glyphicon-unchecked" style="vertical-align:middle;line-height: 1.8em;" data-selection="'+item.contentobject_id+'" style="cursor:pointer;'+self.iconStyle+'"></span>');
                     input.data('item', item);
                     input.bind('click', function(e){
                         e.preventDefault();
@@ -627,13 +646,17 @@
                         $(this).removeClass('glyphicon-unchecked').addClass('glyphicon-check');
                     });
                 }else{
-                    input = $('<span class="glyphicon glyphicon-check pull-left" data-selection="'+item.contentobject_id+'" style="cursor:pointer;'+self.iconStyle+'"></span>');
+                    input = $('<span class="glyphicon glyphicon-check" style="vertical-align:middle;line-height: 1.8em;" data-selection="'+item.contentobject_id+'" style="cursor:pointer;'+self.iconStyle+'"></span>');
                 }
             }else{                
-                input = $('<span class="glyphicon glyphicon-ban-circle text-muted pull-left" data-selection="'+item.contentobject_id+'" style="'+self.iconStyle+'"></span>');                
+                input = $('<span class="glyphicon glyphicon-ban-circle text-muted" style="vertical-align:middle;line-height: 1.8em;" data-selection="'+item.contentobject_id+'" style="'+self.iconStyle+'"></span>');                
             }
 
             listItem.append(input);
+            if (self.settings.showThumbnail){
+            	var thumbnail = $('<div style="margin:0 10px;background-image:url('+item.thumbnail_url+');background-size: cover;background-position: center center;width: 50px;height: 50px;display: inline-block;vertical-align: middle;"></div>');
+            	listItem.append(thumbnail);
+            }
             listItem.append(name);
 
 
@@ -667,7 +690,7 @@
                 $.each(this.selection, function(){
                     var name = '<span style="">' + this.name + ' <small>' +this.class_name + '</small></span>';
                     var listItem = $('<li style="padding:10px"></li>');                        
-                    var input = $('<span class="glyphicon glyphicon-remove" style="cursor:pointer;'+self.iconStyle+'"></span>');
+                    var input = $('<span class="glyphicon glyphicon-remove" style="vertical-align:middle;line-height: 1.8em;cursor:pointer;'+self.iconStyle+'"></span>');
                     input.data('item', this);
                     input.bind('click', function(e){
                         self.removeFromSelection($(this).data('item'));
@@ -676,6 +699,10 @@
                         self.refreshSelection();
                     });
                     listItem.append(input);
+                    if (self.settings.showThumbnail){
+		            	var thumbnail = $('<div style="margin:0 10px;background-image:url('+this.thumbnail_url+');background-size: cover;background-position: center center;width: 50px;height: 50px;display: inline-block;vertical-align: middle;"></div>');
+		            	listItem.append(thumbnail);
+		            }
                     listItem.append(name);                
                     listItem.appendTo(list);
                     

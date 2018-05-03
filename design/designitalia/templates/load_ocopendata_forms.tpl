@@ -56,20 +56,24 @@ $(document).ready(function(){
         var classes = $(this).data('classes') ? $(this).data('classes').split(',') : false;
         var attributeBase = $(this).data('attribute_base');
         var attributeId = $(this).data('attribute');        
+        var showThumbnail = $(this).data('show_thumbnail') == 1;
 
         self.opendataBrowse({
             'subtree': subtree,
             'addCloseButton': true,
             'addCreateButton': true,
-            'classes': classes
+            'classes': classes,
+            'showThumbnail': showThumbnail
         }).on('opendata.browse.select', function (event, opendataBrowse) {
             var container = self.parents('.ezobject-relationlist-container').find('tbody');
             var priority = container.find('td.related-order').last().find('input').val() || -1;
             priority++;
+            console.log(opendataBrowse.selection);
             $.each(opendataBrowse.selection, function(){                
                 var row = $('<tr></tr>');
                 $('<td class="related-id"><input type="checkbox" name="'+attributeBase+'_selection['+attributeId+'][]" value="'+this.contentobject_id+'" /><input type="hidden" name="'+attributeBase+'_data_object_relation_list_'+attributeId+'[]" value="'+this.contentobject_id+'" /></td>').appendTo(row);
-                $('<td class="related-name">'+this.name+' <small>('+this.class_name+')</small></td>').appendTo(row);
+                var thumbnail = showThumbnail ? '<div style="margin:0 10px;background-image:url('+this.thumbnail_url+');background-size: cover;background-position: center center;width: 50px;height: 50px;display: inline-block;vertical-align: middle;"></div>' : '';
+                $('<td class="related-name">'+thumbnail+this.name+' <small>('+this.class_name+')</small></td>').appendTo(row);
                 $('<td class="related-section"><small></small></td>').appendTo(row);
                 $('<td><input size="2" type="text" name="'+attributeBase+'_priority['+attributeId+'][]" value="'+priority+'" /></td>').appendTo(row);                
                 container.find('tr.buttons').before(row);

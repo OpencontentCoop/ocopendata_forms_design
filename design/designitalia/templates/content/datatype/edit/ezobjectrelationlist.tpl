@@ -236,8 +236,8 @@
               </td>
               
               <td class="related-name">
-              {if $related|has_attribute( 'image' )}
-                {attribute_view_gui attribute=$related|attribute( 'image' ) image_class=tiny fluid=false()}
+              {if ezini('ObjectRelationsMultiupload','ClassAttributeIdentifiers','ocoperatorscollection.ini')|contains($contentclass_attribute.identifier)}
+                <div style="margin:0 10px;{if and($related|has_attribute( 'image' ), $related|attribute( 'image' ).data_type_string|eq('ezimage'))}background-image:url({$related|attribute( 'image' ).content['medium'].url|ezroot(no)});{/if}background-size: cover;background-position: center center;width: 50px;height: 50px;display: inline-block;vertical-align: middle;"></div>                
               {/if}
               {$related.name|wash()} <small>({$related.class_name|wash()})</small>
               </td>
@@ -270,6 +270,7 @@
       </tbody>
       </table>
       <div class="ezobject-relationlist-browse"           
+           data-show_thumbnail="{if ezini('ObjectRelationsMultiupload','ClassAttributeIdentifiers','ocoperatorscollection.ini')|contains($contentclass_attribute.identifier)}1{else}0{/if}"
            data-attribute_base="{$attribute_base}" 
            data-attribute="{$attribute.id}" 
            data-classes="{if is_set( $attribute.class_content.class_constraint_list[0] )}{$attribute.class_content.class_constraint_list|implode(',')}{/if}"
