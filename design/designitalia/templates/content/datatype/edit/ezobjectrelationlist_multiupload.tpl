@@ -14,14 +14,14 @@
         <th><small>{'Name'|i18n( 'design/standard/content/datatype' )}</small></th>
         {*<th>{'Type'|i18n( 'design/standard/content/datatype' )}</th>*}
         <th>{'Section'|i18n( 'design/standard/content/datatype' )}</th>
-        {*<th>{'Published'|i18n( 'design/standard/content/datatype' )}</th>*}
+        <th>{'Published'|i18n( 'design/standard/content/datatype' )}</th>
         <th class="tight">{'Order'|i18n( 'design/standard/content/datatype' )}</th>
     </tr>
     </thead>
     <tbody>
     {if $attribute.content.relation_list}
         {foreach $attribute.content.relation_list as $item sequence array( 'bglight', 'bgdark' ) as $style}
-	  {include name=relation_item uri='design:ezjsctemplate/relation_list_row.tpl' arguments=array( $item.contentobject_id, $attribute.id, $item.priority )}
+	         {include name=relation_item uri='design:ezjsctemplate/relation_list_row.tpl' arguments=array( $item.contentobject_id, $attribute.id, $item.priority )}
         {/foreach}
     {/if}
     <tr class="hide">
@@ -62,25 +62,12 @@
     {/if}
 
     <div class="clearfix">
-    <div class="pull-left">
-        <input class="btn btn-info" type="submit" name="CustomActionButton[{$attribute.id}_browse_objects]" value="{'Add existing objects'|i18n( 'design/standard/content/datatype' )}" title="{'Browse to add existing objects in this relation'|i18n( 'design/standard/content/datatype' )}" />
+    <div class="pull-left">      
+        <button class="btn btn-info" type="submit" name="CustomActionButton[{$attribute.id}_browse_objects]" title="{'Browse to add existing objects in this relation'|i18n( 'design/standard/content/datatype' )}">
+          <span class="fa fa-plus"></span> {'Add existing objects'|i18n( 'design/standard/content/datatype' )}
+        </button>
     </div>
     {include uri='design:content/datatype/edit/ezobjectrelationlist_ajaxuploader.tpl'}
 
-    <div class="pull-right">
-    <div class="input-group">
-        <input type="text" class="form-control hide ezobject-relation-search-text" size="25" />
-        <span class="input-group-btn">
-            <button type="submit" class="button hide ezobject-relation-search-btn btn btn-sm btn-info btn-sm" name="CustomActionButton[{$attribute.id}_browse_objects]"><span class="glyphicon glyphicon-search"></span></button>
-        </span>
-    </div>
-    </div>
-    </div>
-    
-    <div class="block inline-block ezobject-relation-search-browse hide">
-        <p class="ezobject-relation-search-browse-help"><em>Seleziona gli elementi tra i risultati della ricerca:</em></p>
-    </div>
-
-    {include uri='design:content/datatype/edit/ezobjectrelation_ajax_search.tpl'}
 
 </div>
