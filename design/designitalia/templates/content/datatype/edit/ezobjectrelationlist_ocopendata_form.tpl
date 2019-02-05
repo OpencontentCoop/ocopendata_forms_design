@@ -57,10 +57,10 @@
             <button class="btn btn-sm btn-danger ezobject-relationlist-remove-button" type="submit" name="CustomActionButton[{$attribute.id}_remove_objects]" {if count($attribute.content.relation_list)|eq(0)}style="display:none"{/if}>
               <span class="fa fa-trash"></span>
             </button>
-            <button class="btn btn-sm btn-info ezobject-relationlist-add-button pull-right"                 
+            <button class="btn btn-sm btn-info ezobject-relationlist-add-button"                 
                 type="submit" 
                 name="CustomActionButton[{$attribute.id}_browse_objects]">
-              <span class="fa fa-plus"></span> {'Add existing objects'|i18n( 'design/standard/content/datatype' )}
+              <span class="fa fa-plus"></span> {'Add objects'|i18n( 'openpa/widget' )}
             </button>
           </td>          
         </tr>

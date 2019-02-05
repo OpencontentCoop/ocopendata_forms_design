@@ -32,6 +32,7 @@
     'fields/RelationBrowse.js',
     'fields/LocationBrowse.js',
     'fields/Tags.js',
+    ezini('JavascriptSettings', 'IncludeScriptList', 'ocopendata_connectors.ini'),
     'jquery.opendataform.js'
 ))}
 {ezcss_require(array(
